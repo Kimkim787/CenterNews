@@ -7,6 +7,8 @@ import 'package:centernews/features/screens/bookmarks/bookmarks_controller.dart'
 import 'package:centernews/features/screens/bookmarks/bookmarks_interface.dart';
 import 'package:centernews/features/screens/bookmarks/bookmarks_page.dart';
 import 'package:centernews/features/screens/news/interface.dart';
+import 'package:centernews/features/screens/login/interface.dart';
+import 'package:centernews/features/pages/profile/user_profile_page.dart';
 import 'package:centernews/presentation/news_card.dart';
 import 'package:centernews/presentation/search_input.dart';
 
@@ -24,16 +26,6 @@ class NewsPage extends GetView<INewsController> {
       appBar: AppBar(
         title: const Text('Latest News'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.bookmark),
-            tooltip: 'Bookmarks',
-            onPressed: () => Get.to(
-              () => const BookmarksPage(),
-              binding: BindingsBuilder(() {
-                Get.lazyPut<IBookmarkController>(() => BookmarkController());
-              }),
-            ),
-          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: controller.fetchLatest,
@@ -107,6 +99,37 @@ class NewsPage extends GetView<INewsController> {
           ],
         );
       }),
+      bottomNavigationBar: BottomAppBar(
+        elevation: 8,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.bookmark),
+                label: const Text('Bookmarks'),
+                onPressed: () => Get.to(
+                  () => const BookmarksPage(),
+                  binding: BindingsBuilder(() {
+                    Get.lazyPut<IBookmarkController>(() => BookmarkController());
+                  }),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.person),
+                label: const Text('Profile'),
+                onPressed: () {
+                  Get.find<IAuthController>();
+                  Get.to(() => const UserProfilePage());
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
