@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:centernews/core/configurations/app_binding.dart';
 import 'package:centernews/core/configurations/routes.dart';
@@ -13,8 +14,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appName = dotenv.env['APP_NAME'] ?? 'CenterNews';
     return GetMaterialApp(
-      title: 'CenterNews',
+      title: appName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),

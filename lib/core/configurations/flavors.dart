@@ -1,5 +1,13 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+class DevFlavorConfig {
+  const DevFlavorConfig();
+
+  Future<void> loadConfig() async {
+    await dotenv.load(fileName: "lib/environments/.env.dev");
+  }
+}
+
 class QatFlavorConfig {
   const QatFlavorConfig();
 
@@ -30,6 +38,9 @@ Future<void> loadFlavorEnv({String? flavorName}) async {
       .toLowerCase();
 
   switch (value) {
+    case 'dev':
+      await const DevFlavorConfig().loadConfig();
+      break;
     case 'qat':
       await const QatFlavorConfig().loadConfig();
       break;
