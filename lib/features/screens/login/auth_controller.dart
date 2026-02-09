@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:centernews/core/api/auth/auth_api.dart';
 import 'package:centernews/core/configurations/routes.dart';
 import 'package:centernews/core/constants/user_constants.dart';
 import 'package:centernews/core/error/error_messages.dart';
@@ -7,8 +8,7 @@ import 'package:centernews/core/models/seed_user.dart';
 import 'package:centernews/features/screens/login/interface.dart';
 
 class AuthController extends IAuthController {
-  final SeedUser _adminUser = kDefaultAdminUser;
-  final Rxn<SeedUser> _tempUser = Rxn<SeedUser>();
+  final Rxn<SeedUser> _currentUser = Rxn<SeedUser>();
 
   @override
   final TextEditingController usernameController = TextEditingController();
@@ -29,15 +29,7 @@ class AuthController extends IAuthController {
   final RxBool isLoading = false.obs;
 
   @override
-  SeedUser get user => _tempUser.value ?? _adminUser;
-
-  SeedUser? _findUser(String username) {
-    if (_tempUser.value != null && _tempUser.value!.username == username) {
-      return _tempUser.value;
-    }
-    if (_adminUser.username == username) return _adminUser;
-    return null;
-  }
+  SeedUser get user => _currentUser.value ?? kDefaultAdminUser;
 
   /// Validates credentials; UI handles navigation on success.
   @override
@@ -51,22 +43,25 @@ class AuthController extends IAuthController {
     }
 
     isLoading.value = true;
-    await Future<void>.delayed(const Duration(milliseconds: 250));
+    try {
+      final matchedUser = await AuthApi.login(
+        username: enteredUsername,
+        password: enteredPassword,
+      );
 
-    final matchedUser = _findUser(enteredUsername);
-    final success =
-        matchedUser != null && matchedUser.password == enteredPassword;
+      if (matchedUser != null) {
+        _currentUser.value = matchedUser;
+        errorMessage.value = '';
+        usernameController.clear();
+        passwordController.clear();
+        return true;
+      }
 
-    if (success) {
-      errorMessage.value = '';
-      usernameController.clear();
-      passwordController.clear();
-    } else {
       errorMessage.value = ErrorMessages.invalidCredentials;
+      return false;
+    } finally {
+      isLoading.value = false;
     }
-
-    isLoading.value = false;
-    return success;
   }
 
   @override
@@ -82,28 +77,31 @@ class AuthController extends IAuthController {
     }
 
     isLoading.value = true;
-    await Future<void>.delayed(const Duration(milliseconds: 250));
+    try {
+      final createdUser = await AuthApi.signUp(
+        firstName: first,
+        lastName: last,
+        username: username,
+        password: password,
+      );
 
-    _tempUser.value = SeedUser(
-      username: username,
-      password: password,
-      firstName: first,
-      lastName: last,
-    );
+      _currentUser.value = createdUser;
+      errorMessage.value = '';
 
-    errorMessage.value = '';
-    isLoading.value = false;
+      firstNameController.clear();
+      lastNameController.clear();
+      usernameController.clear();
+      passwordController.clear();
 
-    firstNameController.clear();
-    lastNameController.clear();
-    usernameController.clear();
-    passwordController.clear();
-
-    return true;
+      return true;
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   @override
   void logout() {
+    _currentUser.value = null;
     Get.offAllNamed(AppRoutes.login);
   }
 

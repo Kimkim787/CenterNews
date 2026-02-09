@@ -6,6 +6,8 @@ class ErrorMessages {
   static const fillAllFields = 'Please fill in all fields.';
 
   static const newsLoadFailed = 'Failed to load news. Please try again.';
+  static const bookmarksLoadFailed =
+      'Failed to load bookmarks. Please try again.';
   static const noArticlesMatch = 'No articles match your search.';
 
   static const invalidArticleLink = 'Invalid article link';

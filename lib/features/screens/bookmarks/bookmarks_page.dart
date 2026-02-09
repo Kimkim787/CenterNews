@@ -29,6 +29,29 @@ class BookmarksPage extends GetView<IBookmarkController> {
         ],
       ),
       body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (controller.errorMessage.isNotEmpty) {
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  controller.errorMessage.value,
+                  style: const TextStyle(color: Colors.red),
+                ),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: controller.loadBookmarks,
+                  child: const Text('Try again'),
+                ),
+              ],
+            ),
+          );
+        }
+
         final items = controller.bookmarks;
         if (items.isEmpty) {
           return const Center(child: Text('No bookmarks yet.'));
