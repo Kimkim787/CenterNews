@@ -1,16 +1,30 @@
 # centernews
 
-A new Flutter project.
+Flutter News App
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+How to install?
+1. Clone this repo.
+2. Install flutter [Install with VSCode
+](https://docs.flutter.dev/install/with-vs-code) or [install manually](https://docs.flutter.dev/install/manual)
+3. Run this in terminal 'flutter pub get' to install dependencies.
+4. Plug in your mobile device to your computer. Make sure to turn on Developer mode and USB Debugging
+5. Run this in terminal, environment specific:
+- **DEV**
+  ```bash
+  flutter run --flavor dev --dart-define=FLAVOR=dev
+  ```
+- **QAT**
+  ```bash
+  flutter run --flavor qat --dart-define=FLAVOR=qat
+  ```
+- **UAT**
+  ```bash
+  flutter run --flavor uat --dart-define=FLAVOR=uat
+  ```
+- **PROD**
+  ```bash
+  flutter run --flavor prod --dart-define=FLAVOR=prod
+  ```
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
